@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Notices | Nexus HR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        nav { width: 260px; background: var(--white); border-right: 1px solid var(--border); padding: 30px 20px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: var(--text-muted); text-decoration: none; border-radius: 10px; margin-bottom: 5px; cursor: pointer; }
+        .nav-item.active { background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 600; }
+
+        main { flex: 1; padding: 40px; max-width: 1200px; }
+
+        .notice-form-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; color: var(--text-main); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #374151; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-size: 0.95rem;
+        }
+        .form-group textarea { height: 120px; resize: none; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); }
+
+        .btn-publish { background: var(--primary); color: white; padding: 12px 25px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-publish:hover { background: #1d4ed8; }
+
+        .table-container { background: var(--white); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; text-align: left; padding: 16px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+
+        .audience-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+        .audience-all { background: #e0f2fe; color: #0369a1; }
+        .audience-emp { background: #fef3c7; color: #92400e; }
+        .audience-cli { background: #dcfce7; color: #166534; }
+
+        .actions { display: flex; gap: 15px; }
+        .action-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); }
+        .action-btn:hover { color: var(--primary); }
+        .action-btn.delete:hover { color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+        <div class="nav-item"><i data-lucide="users"></i> Employees</div>
+        <div class="nav-item active"><i data-lucide="megaphone"></i> Manage Notices</div>
+    </nav>
+
+    <main>
+        <div class="notice-form-card">
+            <h2 class="form-title" id="formHeader">Publish New Notice</h2>
+            <form id="noticeForm">
+                <input type="hidden" id="editIndex" value="-1">
+                <div class="form-group">
+                    <label>Notice Title</label>
+                    <input type="text" id="noticeTitle" placeholder="e.g., Office Holiday Announcement" required>
+                </div>
+                <div class="form-group">
+                    <label>Notice Details</label>
+                    <textarea id="noticeDetails" placeholder="Type the full message here..." required></textarea>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Target Audience</label>
+                        <select id="noticeAudience" required>
+                            <option value="" disabled selected>Select Audience</option>
+                            <option value="All">All</option>
+                            <option value="Employees Only">Employees Only</option>
+                            <option value="Clients Only">Clients Only</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-publish" id="submitBtn">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Audience</th>
+                        <th>Date Published</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="noticeTableBody">
+                    <!-- Data injected here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        let notices = [
+            { title: "Annual General Meeting", details: "Details here...", audience: "All", date: "May 02, 2026" },
+            { title: "Client System Update", details: "Details here...", audience: "Clients Only", date: "Apr 30, 2026" }
+        ];
+
+        function renderTable() {
+            const body = document.getElementById('noticeTableBody');
+            body.innerHTML = notices.map((n, index) => `
+                <tr>
+                    <td style="font-weight: 600;">${n.title}</td>
+                    <td><span class="audience-badge ${getBadgeClass(n.audience)}">${n.audience}</span></td>
+                    <td style="color: var(--text-muted);">${n.date}</td>
+                    <td class="actions">
+                        <button class="action-btn" onclick="editNotice(${index})"><i data-lucide="edit-3" size="18"></i></button>
+                        <button class="action-btn delete" onclick="deleteNotice(${index})"><i data-lucide="trash-2" size="18"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function getBadgeClass(aud) {
+            if (aud === 'All') return 'audience-all';
+            if (aud === 'Employees Only') return 'audience-emp';
+            return 'audience-cli';
+        }
+
+        document.getElementById('noticeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editIndex = document.getElementById('editIndex').value;
+            
+            const newNotice = {
+                title: document.getElementById('noticeTitle').value,
+                details: document.getElementById('noticeDetails').value,
+                audience: document.getElementById('noticeAudience').value,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+            };
+
+            if (editIndex === "-1") {
+                notices.unshift(newNotice); // Newest first
+            } else {
+                notices[editIndex] = newNotice;
+                resetForm();
+            }
+
+            renderTable();
+            e.target.reset();
+        });
+
+        function editNotice(index) {
+            const n = notices[index];
+            document.getElementById('noticeTitle').value = n.title;
+            document.getElementById('noticeDetails').value = n.details;
+            document.getElementById('noticeAudience').value = n.audience;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('formHeader').innerText = "Edit Notice";
+            document.getElementById('submitBtn').innerText = "Update Notice";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteNotice(index) {
+            if (confirm("Delete this notice?")) {
+                notices.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('formHeader').innerText = "Publish New Notice";
+            document.getElementById('submitBtn').innerText = "Publish Notice";
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>

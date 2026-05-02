@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Nexus Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; min-height: 100vh; justify-content: center; align-items: center; padding: 20px; }
+
+        .profile-container {
+            background: var(--white);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1 0%, #2563eb 100%);
+            height: 120px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: absolute;
+            bottom: -50px;
+            left: 40px;
+            width: 110px;
+            height: 110px;
+            border-radius: 30px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            object-fit: cover;
+        }
+
+        /* Content Section */
+        .profile-content {
+            padding: 70px 40px 40px 40px;
+        }
+
+        .user-identity {
+            margin-bottom: 30px;
+        }
+
+        .user-identity h1 { font-size: 1.8rem; font-weight: 800; }
+        .user-identity p { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .info-item span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* Action Buttons */
+        .action-stack {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-profile i { color: var(--text-muted); }
+
+        .btn-profile:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.03);
+        }
+
+        .btn-profile:hover i { color: var(--primary); }
+
+        @media (max-width: 500px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .action-stack { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-header"></div>
+        
+        <div class="profile-content">
+            <div class="avatar-wrapper">
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=200&h=200" alt="Profile Photo">
+            </div>
+
+            <div class="user-identity">
+                <h1 id="profName">Sarah Jenkins</h1>
+                <p id="profRoleDept">HR Department • Senior Manager</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Email Address</label>
+                    <span id="profEmail">sarah.jenkins@nexus.com</span>
+                </div>
+                <div class="info-item">
+                    <label>Phone Number</label>
+                    <span id="profPhone">+1 (555) 012-3456</span>
+                </div>
+                <div class="info-item">
+                    <label>Date of Birth</label>
+                    <span id="profDob">September 14, 1992</span>
+                </div>
+                <div class="info-item">
+                    <label>Date Joined</label>
+                    <span id="profJoined">January 10, 2024</span>
+                </div>
+            </div>
+
+            <div class="action-stack">
+                <a href="edit-profile.html" class="btn-profile">
+                    <i data-lucide="user-cog"></i>
+                    Edit Profile
+                </a>
+                <a href="change-photo.html" class="btn-profile">
+                    <i data-lucide="camera"></i>
+                    Change Photo
+                </a>
+                <a href="change-password.html" class="btn-profile">
+                    <i data-lucide="key-round"></i>
+                    Security
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Simulate fetching from DB
+        const userData = {
+            name: "Sarah Jenkins",
+            email: "sarah.jenkins@nexus.com",
+            phone: "+1 (555) 012-3456",
+            dob: "September 14, 1992",
+            role: "Senior Manager",
+            dept: "HR Department",
+            joined: "January 10, 2024"
+        };
+
+        function populateProfile() {
+            // Check for nulls/empty strings before displaying
+            document.getElementById('profName').innerText = userData.name || "N/A";
+            document.getElementById('profEmail').innerText = userData.email || "N/A";
+            document.getElementById('profPhone').innerText = userData.phone || "N/A";
+            document.getElementById('profDob').innerText = userData.dob || "N/A";
+            document.getElementById('profJoined').innerText = userData.joined || "N/A";
+            document.getElementById('profRoleDept').innerText = `${userData.dept} • ${userData.role}`;
+        }
+
+        window.onload = populateProfile;
+    </script>
+</body>
+</html>

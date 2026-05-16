@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | Nexus Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        nav { width: 260px; background: var(--white); border-right: 1px solid var(--border); padding: 30px 20px; display: flex; flex-direction: column; }
+        .logo { font-weight: 700; font-size: 1.4rem; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: var(--text-muted); text-decoration: none; border-radius: 10px; margin-bottom: 5px; }
+        .nav-item.active { background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 600; }
+
+        main { flex: 1; padding: 40px; overflow-y: auto; }
+        .welcome { margin-bottom: 30px; }
+        .welcome h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: var(--white); padding: 25px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden; }
+        .stat-card.alert-bg { border-left: 4px solid var(--danger); }
+        .stat-card h3 { font-size: 0.875rem; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+        .stat-card i { position: absolute; right: 20px; top: 20px; color: #f1f5f9; width: 40px; height: 40px; }
+
+        /* Table Section */
+        .table-container { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); padding: 12px 0; border-bottom: 1px solid var(--border); }
+        td { padding: 16px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+
+        /* Status Badges */
+        .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-inprogress { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #dcfce7; color: #166534; }
+
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            nav { width: 80px; padding: 30px 10px; }
+            .logo span, .nav-item span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <i data-lucide="shield-check"></i>
+            <span>ClientPortal</span>
+        </div>
+        <a href="#" class="nav-item active"><i data-lucide="layout-grid"></i> <span>Dashboard</span></a>
+        <a href="#" class="nav-item"><i data-lucide="package"></i> <span>My Orders</span></a>
+        <a href="#" class="nav-item"><i data-lucide="receipt"></i> <span>Billing</span></a>
+        <a href="#" class="nav-item"><i data-lucide="help-circle"></i> <span>Support</span></a>
+    </nav>
+
+    <main>
+        <div class="welcome">
+            <h1>Welcome back, Acme Corp.</h1>
+            <p style="color: var(--text-muted);">Here's what's happening with your account today.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i data-lucide="shopping-bag" style="color: #e2e8f0;"></i>
+                <h3>My Active Orders</h3>
+                <div class="value" id="activeCount">0</div>
+            </div>
+            <!-- Unpaid Invoices (Conditional Highlighting) -->
+            <div class="stat-card" id="invoiceCard">
+                <i data-lucide="alert-circle" style="color: #e2e8f0;"></i>
+                <h3>Unpaid Invoices</h3>
+                <div class="value" id="unpaidCount">0</div>
+            </div>
+            <div class="stat-card">
+                <i data-lucide="history" style="color: #e2e8f0;"></i>
+                <h3>Total Orders Placed</h3>
+                <div class="value" id="totalCount">0</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2 style="font-size: 1.1rem;">Recent Orders</h2>
+                <button style="color: var(--primary); border: none; background: none; font-weight: 600; cursor: pointer;">View All</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Mock DB Data for the Logged-in Client
+        const clientData = {
+            stats: {
+                active: 4,
+                unpaid: 2, // If > 0, triggers highlighting
+                total: 128
+            },
+            recentOrders: [
+                { id: "#ORD-9921", service: "Strategic Consulting", date: "May 02, 2026", status: "In Progress" },
+                { id: "#ORD-9918", service: "Marketing Campaign", date: "Apr 28, 2026", status: "Pending" },
+                { id: "#ORD-9877", service: "IT Infrastructure Setup", date: "Apr 22, 2026", status: "Completed" },
+                { id: "#ORD-9865", service: "Quarterly Audit", date: "Apr 15, 2026", status: "Completed" },
+                { id: "#ORD-9840", service: "Brand Identity Design", date: "Apr 10, 2026", status: "In Progress" }
+            ]
+        };
+
+        function initDashboard() {
+            // Populate Stats
+            document.getElementById('activeCount').innerText = clientData.stats.active;
+            document.getElementById('unpaidCount').innerText = clientData.stats.unpaid;
+            document.getElementById('totalCount').innerText = clientData.stats.total;
+
+            // Acceptance Criteria: Highlight Unpaid Invoices if > 0
+            if (clientData.stats.unpaid > 0) {
+                const card = document.getElementById('invoiceCard');
+                card.classList.add('alert-bg');
+                document.getElementById('unpaidCount').style.color = 'var(--danger)';
+            }
+
+            // Populate Table
+            const body = document.getElementById('orderTableBody');
+            body.innerHTML = clientData.recentOrders.map(order => `
+                <tr>
+                    <td style="font-weight: 600; color: var(--primary);">${order.id}</td>
+                    <td>${order.service}</td>
+                    <td style="color: var(--text-muted);">${order.date}</td>
+                    <td><span class="badge ${getStatusClass(order.status)}">${order.status}</span></td>
+                </tr>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Pending': return 'status-pending';
+                case 'In Progress': return 'status-inprogress';
+                case 'Completed': return 'status-completed';
+                default: return '';
+            }
+        }
+
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Attendance Logger - WorkSphere</title>
+  <style>
+
+    :root {
+      --bg: #f4f7fb;
+      --sidebar: #16283a;
+      --sidebar-soft: #20364c;
+      --primary: #28a7a2;
+      --primary-dark: #16837f;
+      --text: #25313f;
+      --muted: #6b7785;
+      --line: #dce3ea;
+      --card: #ffffff;
+      --danger: #e85959;
+      --warning: #f2b84b;
+      --success: #36b37e;
+    }
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 230px; background: var(--sidebar); color: white; padding: 22px 18px; }
+    .brand { font-size: 22px; font-weight: 700; margin-bottom: 30px; }
+    .nav a { display: block; color: #d7e1ea; text-decoration: none; padding: 11px 12px; margin: 6px 0; border-radius: 8px; font-size: 14px; }
+    .nav a:hover, .nav a.active { background: var(--sidebar-soft); color: white; }
+    .main { flex: 1; padding: 28px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    h1 { margin: 0; font-size: 26px; }
+    .subtitle { margin-top: 6px; color: var(--muted); font-size: 14px; }
+    .badge { display: inline-block; padding: 7px 12px; border-radius: 20px; background: #e6f6f5; color: var(--primary-dark); font-size: 13px; font-weight: 600; margin-left: 6px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .card h2 { margin: 0 0 14px; font-size: 18px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; outline: none; background: white; }
+    textarea { min-height: 90px; resize: vertical; }
+    .btn { border: none; padding: 10px 16px; border-radius: 8px; background: var(--primary); color: white; cursor: pointer; font-weight: 600; margin-top: 12px; }
+    .btn.secondary { background: #eef3f7; color: var(--text); border: 1px solid var(--line); margin-left: 8px; }
+    .btn.danger { background: var(--danger); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; overflow: hidden; border-radius: 10px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+    th { background: #eef3f7; color: #344255; font-size: 13px; }
+    .status { padding: 5px 9px; border-radius: 14px; font-size: 12px; font-weight: 600; }
+    .status.success { background: #e6f7ef; color: #18845b; }
+    .status.warning { background: #fff3d8; color: #9a6a00; }
+    .status.danger { background: #ffe8e8; color: #ba3333; }
+    .full { grid-column: 1 / -1; }
+    .mini-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+    .mini { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .mini strong { display: block; font-size: 24px; margin-bottom: 4px; }
+    .mini span { color: var(--muted); font-size: 13px; }
+    @media (max-width: 850px) { .layout { flex-direction: column; } .sidebar { width: 100%; } .grid { grid-template-columns: 1fr; } .mini-cards { grid-template-columns: 1fr; } }
+
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">WorkSphere</div>
+      <nav class="nav">
+
+      <a href="hr_dashboard.html">HR Dashboard</a>
+      <a href="employee_dashboard.html">Employee Dashboard</a>
+      <a href="client-dashboard.html">Client Dashboard</a>
+      <a href="manage_notices.html">Manage Notices</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="login.html">Log out</a>
+
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Simple Attendance Logger</h1>
+          <p class="subtitle">Simple module screen for WorkSphere office management system.</p>
+        </div>
+        <div><span class="badge">HR</span>
+<span class="badge">Employee</span></div>
+      </div>
+
+      <div class="mini-cards"><div class="mini"><strong>26</strong><span>Present Today</span></div><div class="mini"><strong>4</strong><span>Late Entries</span></div><div class="mini"><strong>2</strong><span>Absent</span></div></div>
+      <div class="grid"><section class="card"><h2>Employee Attendance</h2><label>Employee ID</label><input type="text" value="EMP-102"><label>Date</label><input type="date"><button class="btn">Check In</button><button class="btn secondary">Check Out</button></section><section class="card"><h2>Today's Status</h2><label>Check-in Time</label><input type="text" value="09:10 AM"><label>Check-out Time</label><input type="text" value="05:00 PM"><label>Status</label><select><option>Present</option><option>Late</option><option>Absent</option></select></section><section class="card full"><h2>Attendance Report</h2><table><tr><th>Employee</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr><tr><td>Mohaiminul Islam</td><td>17 May 2026</td><td>09:00 AM</td><td>05:00 PM</td><td><span class="status success">Present</span></td></tr><tr><td>Sabbir Hossain</td><td>17 May 2026</td><td>09:25 AM</td><td>05:00 PM</td><td><span class="status warning">Late</span></td></tr></table></section></div>
+
+    </main>
+  </div>
+</body>
+</html>
